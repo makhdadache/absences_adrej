@@ -1,0 +1,551 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--font-sans);direction:rtl;}
+.app{padding:1rem 0;direction:rtl;}
+.nav{display:flex;gap:6px;margin-bottom:1.5rem;border-bottom:0.5px solid var(--color-border-tertiary);padding-bottom:12px;flex-wrap:wrap;}
+.nav-btn{padding:7px 13px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:none;font-size:12px;cursor:pointer;font-family:var(--font-sans);color:var(--color-text-secondary);display:flex;align-items:center;gap:5px;}
+.nav-btn.active{background:#E1F5EE;color:#085041;border-color:#5DCAA5;font-weight:500;}
+.nav-btn i{font-size:14px;}
+.page{display:none;}
+.page.active{display:block;}
+.header{display:flex;align-items:center;gap:12px;margin-bottom:1.25rem;flex-direction:row-reverse;justify-content:flex-end;}
+.hicon{width:40px;height:40px;background:#E1F5EE;border-radius:var(--border-radius-md);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.hicon i{font-size:20px;color:#0F6E56;}
+.htxt h1{font-size:18px;font-weight:500;color:var(--color-text-primary);}
+.htxt p{font-size:12px;color:var(--color-text-secondary);margin-top:2px;}
+.card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1.1rem;margin-bottom:.9rem;}
+.slabel{font-size:11px;font-weight:500;color:var(--color-text-tertiary);letter-spacing:.04em;margin-bottom:8px;text-align:right;}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;direction:rtl;}
+.frow.three{grid-template-columns:1fr 1fr 1fr;}
+.field{display:flex;flex-direction:column;gap:4px;}
+.field label{font-size:12px;color:var(--color-text-secondary);text-align:right;}
+.field input,.field select{border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);padding:7px 9px;font-size:13px;background:var(--color-background-primary);color:var(--color-text-primary);font-family:var(--font-sans);text-align:right;direction:rtl;}
+.field input:focus,.field select:focus{outline:none;border-color:#1D9E75;box-shadow:0 0 0 2px #9FE1CB44;}
+.sh{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-direction:row-reverse;}
+.add-btn{display:flex;align-items:center;gap:5px;font-size:12px;color:#0F6E56;background:none;border:0.5px solid #5DCAA5;border-radius:var(--border-radius-md);padding:5px 10px;cursor:pointer;font-family:var(--font-sans);}
+.add-btn:hover{background:#E1F5EE;}
+.srow{display:grid;grid-template-columns:2fr 1fr 1fr 32px;gap:7px;align-items:center;margin-bottom:7px;direction:rtl;}
+.srow input,.srow select{border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);padding:5px 8px;font-size:12px;background:var(--color-background-primary);color:var(--color-text-primary);font-family:var(--font-sans);width:100%;text-align:right;direction:rtl;}
+.rm-btn{width:30px;height:30px;border:none;background:none;cursor:pointer;color:var(--color-text-tertiary);display:flex;align-items:center;justify-content:center;border-radius:var(--border-radius-md);}
+.rm-btn:hover{background:#FCEBEB;color:#A32D2D;}
+.clabels{display:grid;grid-template-columns:2fr 1fr 1fr 32px;gap:7px;margin-bottom:5px;direction:rtl;}
+.clabels span{font-size:11px;color:var(--color-text-tertiary);text-align:right;}
+.divider{height:0.5px;background:var(--color-border-tertiary);margin:.9rem 0;}
+.sgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:.9rem;}
+.stat{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px 12px;text-align:right;}
+.stat .val{font-size:20px;font-weight:500;color:var(--color-text-primary);}
+.stat .lbl{font-size:11px;color:var(--color-text-secondary);margin-top:1px;}
+.sbtn{width:100%;padding:10px;background:#0F6E56;color:white;border:none;border-radius:var(--border-radius-md);font-size:14px;font-weight:500;cursor:pointer;font-family:var(--font-sans);display:flex;align-items:center;justify-content:center;gap:7px;flex-direction:row-reverse;}
+.sbtn:hover{background:#085041;}
+.banner{border-radius:var(--border-radius-md);padding:10px 14px;display:none;align-items:center;gap:8px;font-size:13px;margin-top:.8rem;flex-direction:row-reverse;}
+.banner.success{background:#E1F5EE;border:0.5px solid #5DCAA5;color:#085041;}
+.banner.error{background:#FCEBEB;border:0.5px solid #F09595;color:#791F1F;}
+.mbadge{display:inline-flex;align-items:center;gap:5px;background:#E1F5EE;color:#085041;font-size:11px;padding:3px 9px;border-radius:99px;font-weight:500;margin-right:7px;}
+.rcards{display:flex;flex-direction:column;gap:9px;}
+.rcard{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:.9rem 1.1rem;}
+.rcard-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.rtitle{font-size:14px;font-weight:500;color:var(--color-text-primary);}
+.rmeta{font-size:11px;color:var(--color-text-secondary);margin-top:2px;}
+.rbadge{background:#E1F5EE;color:#085041;font-size:11px;padding:3px 9px;border-radius:99px;font-weight:500;white-space:nowrap;}
+.rstats{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:8px;}
+.rstat{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:7px 10px;text-align:right;}
+.rstat .v{font-size:16px;font-weight:500;color:var(--color-text-primary);}
+.rstat .l{font-size:11px;color:var(--color-text-secondary);}
+.ractions{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;}
+.abtn{display:flex;align-items:center;gap:4px;font-size:11px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);padding:5px 9px;cursor:pointer;background:none;font-family:var(--font-sans);color:var(--color-text-secondary);}
+.abtn:hover{background:var(--color-background-secondary);}
+.abtn.danger:hover{background:#FCEBEB;color:#A32D2D;border-color:#F09595;}
+.abtn.pdf-btn{color:#185FA5;border-color:#85B7EB;}
+.abtn.pdf-btn:hover{background:#E6F1FB;}
+.abtn i{font-size:13px;}
+.detail-panel{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:9px 12px;margin-top:8px;display:none;}
+.detail-panel.open{display:block;}
+.drow{display:grid;grid-template-columns:2fr 1fr 1fr;gap:7px;padding:4px 0;border-bottom:0.5px solid var(--color-border-tertiary);direction:rtl;}
+.drow:last-child{border-bottom:none;}
+.drow span{font-size:12px;color:var(--color-text-primary);text-align:right;}
+.drow span.m{color:var(--color-text-secondary);}
+.empty{text-align:center;padding:2.5rem 1rem;color:var(--color-text-secondary);}
+.empty i{font-size:36px;color:var(--color-text-tertiary);margin-bottom:10px;display:block;}
+.empty p{font-size:13px;}
+.filt{display:flex;gap:8px;margin-bottom:1rem;flex-wrap:wrap;}
+.filt input,.filt select{border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);padding:7px 9px;font-size:12px;background:var(--color-background-primary);color:var(--color-text-primary);font-family:var(--font-sans);direction:rtl;text-align:right;}
+.s4grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:1.2rem;}
+.ai-box{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1.1rem;margin-bottom:.9rem;}
+.ai-result{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:12px;font-size:13px;color:var(--color-text-primary);line-height:1.7;text-align:right;direction:rtl;margin-top:10px;min-height:60px;}
+.ai-btn{display:flex;align-items:center;gap:7px;padding:9px 16px;background:#534AB7;color:white;border:none;border-radius:var(--border-radius-md);font-size:13px;font-weight:500;cursor:pointer;font-family:var(--font-sans);flex-direction:row-reverse;}
+.ai-btn:hover{background:#3C3489;}
+.ai-btn:disabled{opacity:.5;cursor:not-allowed;}
+.ai-btn i{font-size:16px;}
+.loading-dots::after{content:'...';animation:dots 1.2s infinite;}
+@keyframes dots{0%{content:'.';}50%{content:'..';}100%{content:'...'}}
+.backup-btn{display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:none;font-size:12px;cursor:pointer;font-family:var(--font-sans);color:var(--color-text-secondary);}
+.backup-btn:hover{background:var(--color-background-secondary);}
+.backup-btn i{font-size:14px;}
+.backup-btn.green{color:#0F6E56;border-color:#5DCAA5;}
+.backup-btn.green:hover{background:#E1F5EE;}
+.bkp-row{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;}
+.tab-bar{display:flex;gap:6px;margin-bottom:1rem;border-bottom:0.5px solid var(--color-border-tertiary);padding-bottom:10px;}
+.tab{padding:6px 14px;border-radius:var(--border-radius-md);border:none;background:none;font-size:12px;cursor:pointer;font-family:var(--font-sans);color:var(--color-text-secondary);}
+.tab.active{background:#E1F5EE;color:#085041;font-weight:500;}
+</style>
+
+<div class="app" dir="rtl">
+<h2 class="sr-only">نظام إدارة الغيابات المدرسية الشامل</h2>
+
+<div class="nav">
+  <button class="nav-btn active" onclick="showPage('form')" id="nav-form"><i class="ti ti-edit" aria-hidden="true"></i> تسجيل غيابات</button>
+  <button class="nav-btn" onclick="showPage('reports')" id="nav-reports"><i class="ti ti-database" aria-hidden="true"></i> التقارير</button>
+  <button class="nav-btn" onclick="showPage('director')" id="nav-director"><i class="ti ti-building-school" aria-hidden="true"></i> عرض المدير</button>
+  <button class="nav-btn" onclick="showPage('ai')" id="nav-ai"><i class="ti ti-brain" aria-hidden="true"></i> تحليل ذكاء اصطناعي</button>
+  <button class="nav-btn" onclick="showPage('backup')" id="nav-backup"><i class="ti ti-shield-check" aria-hidden="true"></i> نسخ احتياطي</button>
+</div>
+
+<div class="page active" id="page-form">
+  <div class="header">
+    <div class="hicon"><i class="ti ti-clipboard-list" aria-hidden="true"></i></div>
+    <div class="htxt">
+      <h1>الغيابات الشهرية <span class="mbadge" id="month-badge"><i class="ti ti-calendar" aria-hidden="true"></i><span id="badge-month">—</span></span></h1>
+      <p>تسجيل تقرير الغياب من طرف الأستاذ</p>
+    </div>
+  </div>
+  <div class="card">
+    <div class="slabel">المعلومات العامة</div>
+    <div class="frow three">
+      <div class="field"><label>الأستاذ</label><input type="text" id="prof-name" placeholder="الاسم الكامل"/></div>
+      <div class="field"><label>القسم / الفوج</label><input type="text" id="classe" placeholder="مثال: 3 ب"/></div>
+      <div class="field"><label>المادة</label><input type="text" id="matiere" placeholder="مثال: الرياضيات"/></div>
+    </div>
+    <div class="frow">
+      <div class="field"><label>الشهر المعني</label><input type="month" id="mois" style="text-align:left;direction:ltr;"/></div>
+      <div class="field"><label>إجمالي أيام الحضور</label><input type="number" id="nb-seances" min="1" placeholder="مثال: 22"/></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="sh">
+      <div class="slabel" style="margin-bottom:0">قائمة الغيابات</div>
+      <button class="add-btn" onclick="addStudent()"><i class="ti ti-plus" aria-hidden="true"></i> إضافة تلميذ</button>
+    </div>
+    <div class="clabels"><span>اسم التلميذ</span><span>الغيابات (أيام)</span><span>مبررة</span><span></span></div>
+    <div id="student-list"></div>
+    <div class="divider"></div>
+    <div class="sgrid">
+      <div class="stat"><div class="val" id="stat-e">0</div><div class="lbl">التلاميذ الغائبون</div></div>
+      <div class="stat"><div class="val" id="stat-t">0</div><div class="lbl">مجموع الغيابات</div></div>
+      <div class="stat"><div class="val" id="stat-j">0</div><div class="lbl">الغيابات المبررة</div></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="slabel">ملاحظات الأستاذ</div>
+    <textarea id="remarques" rows="3" style="width:100%;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);padding:8px 9px;font-size:13px;font-family:var(--font-sans);color:var(--color-text-primary);background:var(--color-background-primary);resize:vertical;text-align:right;direction:rtl;" placeholder="ملاحظات عامة، حالات خاصة..."></textarea>
+  </div>
+  <button class="sbtn" onclick="submitReport()"><i class="ti ti-device-floppy" aria-hidden="true"></i> حفظ التقرير</button>
+  <div class="banner success" id="success-banner"><i class="ti ti-circle-check" aria-hidden="true"></i><span id="success-msg"></span></div>
+  <div class="banner error" id="error-banner"><i class="ti ti-alert-circle" aria-hidden="true"></i><span id="error-msg"></span></div>
+</div>
+
+<div class="page" id="page-reports">
+  <div class="header">
+    <div class="hicon"><i class="ti ti-database" aria-hidden="true"></i></div>
+    <div class="htxt"><h1>التقارير المحفوظة</h1><p>جميع تقارير الغياب المسجّلة</p></div>
+  </div>
+  <div class="filt">
+    <input type="text" id="filter-search" placeholder="بحث..." style="flex:1;min-width:120px;" oninput="renderReports()"/>
+    <select id="filter-month" onchange="renderReports()" style="width:150px;"><option value="">كل الأشهر</option></select>
+  </div>
+  <div id="reports-list"></div>
+</div>
+
+<div class="page" id="page-director">
+  <div class="header">
+    <div class="hicon"><i class="ti ti-building-school" aria-hidden="true"></i></div>
+    <div class="htxt"><h1>لوحة المدير</h1><p>نظرة شاملة على جميع التقارير الواردة</p></div>
+  </div>
+  <div class="s4grid" id="dir-stats"></div>
+  <div class="tab-bar">
+    <button class="tab active" onclick="dirTab('summary')" id="dt-summary">ملخص الأقسام</button>
+    <button class="tab" onclick="dirTab('profs')" id="dt-profs">الأساتذة</button>
+    <button class="tab" onclick="dirTab('top')" id="dt-top">أكثر الغائبين</button>
+  </div>
+  <div id="dir-content"></div>
+</div>
+
+<div class="page" id="page-ai">
+  <div class="header">
+    <div class="hicon" style="background:#EEEDFE;"><i class="ti ti-brain" aria-hidden="true" style="color:#534AB7;"></i></div>
+    <div class="htxt"><h1>تحليل بالذكاء الاصطناعي</h1><p>تحليل اتجاهات الغياب باستخدام Claude AI</p></div>
+  </div>
+  <div class="ai-box">
+    <div class="slabel">نوع التحليل</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;">
+      <button class="abtn" onclick="setAiPrompt('trends')" style="font-size:12px;"><i class="ti ti-trending-up" aria-hidden="true"></i> الاتجاهات العامة</button>
+      <button class="abtn" onclick="setAiPrompt('alert')" style="font-size:12px;"><i class="ti ti-alert-triangle" aria-hidden="true"></i> حالات تستدعي التدخل</button>
+      <button class="abtn" onclick="setAiPrompt('monthly')" style="font-size:12px;"><i class="ti ti-calendar-stats" aria-hidden="true"></i> مقارنة شهرية</button>
+      <button class="abtn" onclick="setAiPrompt('recommendations')" style="font-size:12px;"><i class="ti ti-bulb" aria-hidden="true"></i> توصيات</button>
+    </div>
+    <textarea id="ai-prompt" rows="3" style="width:100%;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);padding:8px 9px;font-size:13px;font-family:var(--font-sans);color:var(--color-text-primary);background:var(--color-background-primary);resize:vertical;text-align:right;direction:rtl;margin-bottom:10px;" placeholder="اكتب سؤالك أو اختر نوع التحليل أعلاه..."></textarea>
+    <button class="ai-btn" id="ai-run-btn" onclick="runAI()"><i class="ti ti-sparkles" aria-hidden="true"></i> تحليل البيانات</button>
+    <div class="ai-result" id="ai-result" style="display:none;"></div>
+  </div>
+</div>
+
+<div class="page" id="page-backup">
+  <div class="header">
+    <div class="hicon"><i class="ti ti-shield-check" aria-hidden="true"></i></div>
+    <div class="htxt"><h1>النسخ الاحتياطي</h1><p>حفظ واستعادة بيانات التقارير</p></div>
+  </div>
+  <div class="card">
+    <div class="slabel">تصدير البيانات</div>
+    <p style="font-size:13px;color:var(--color-text-secondary);text-align:right;margin-bottom:10px;">قم بتنزيل نسخة احتياطية كاملة من جميع التقارير بصيغة JSON</p>
+    <div class="bkp-row">
+      <button class="backup-btn green" onclick="exportBackup()"><i class="ti ti-download" aria-hidden="true"></i> تنزيل نسخة احتياطية</button>
+      <button class="backup-btn" onclick="exportCSV()"><i class="ti ti-table-export" aria-hidden="true"></i> تصدير CSV</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="slabel">استيراد البيانات</div>
+    <p style="font-size:13px;color:var(--color-text-secondary);text-align:right;margin-bottom:10px;">استعد بياناتك من ملف نسخة احتياطية سابقة</p>
+    <input type="file" id="import-file" accept=".json" style="display:none;" onchange="importBackup(event)"/>
+    <button class="backup-btn green" onclick="document.getElementById('import-file').click()"><i class="ti ti-upload" aria-hidden="true"></i> استيراد ملف JSON</button>
+    <div class="banner success" id="import-banner" style="margin-top:8px;"><i class="ti ti-circle-check" aria-hidden="true"></i><span id="import-msg"></span></div>
+  </div>
+  <div class="card">
+    <div class="slabel">إحصائيات التخزين</div>
+    <div id="storage-stats" style="font-size:13px;color:var(--color-text-secondary);text-align:right;"></div>
+  </div>
+</div>
+</div>
+
+<script>
+const SK='absences-v2';
+let students=[],idC=0,editId=null,dirTabCur='summary';
+
+async function load(){try{const r=await window.storage.get(SK);return r?JSON.parse(r.value):[]}catch(e){return[]}}
+async function save(d){await window.storage.set(SK,JSON.stringify(d));}
+
+function showPage(n){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('page-'+n).classList.add('active');
+  document.getElementById('nav-'+n).classList.add('active');
+  if(n==='reports')renderReports();
+  if(n==='director')renderDirector();
+  if(n==='backup')renderStorageStats();
+}
+
+function addStudent(){const id=++idC;students.push({id,name:'',absences:'',justifiees:'non'});renderStudents();}
+function removeStudent(id){students=students.filter(s=>s.id!==id);renderStudents();}
+function updateStudent(id,f,v){const s=students.find(s=>s.id===id);if(s){s[f]=v;updateStats();}}
+
+function renderStudents(){
+  const l=document.getElementById('student-list');l.innerHTML='';
+  students.forEach(s=>{
+    const r=document.createElement('div');r.className='srow';
+    r.innerHTML=`<input type="text" placeholder="اسم التلميذ" value="${s.name}" oninput="updateStudent(${s.id},'name',this.value)"/>
+    <input type="number" min="0" placeholder="0" value="${s.absences}" oninput="updateStudent(${s.id},'absences',this.value)"/>
+    <select onchange="updateStudent(${s.id},'justifiees',this.value)">
+      <option value="non" ${s.justifiees==='non'?'selected':''}>لا</option>
+      <option value="partiel" ${s.justifiees==='partiel'?'selected':''}>جزئي</option>
+      <option value="oui" ${s.justifiees==='oui'?'selected':''}>نعم</option>
+    </select>
+    <button class="rm-btn" onclick="removeStudent(${s.id})" aria-label="حذف"><i class="ti ti-trash" aria-hidden="true"></i></button>`;
+    l.appendChild(r);
+  });updateStats();
+}
+
+function updateStats(){
+  const t=students.reduce((s,x)=>s+(parseInt(x.absences)||0),0);
+  const j=students.filter(x=>x.justifiees==='oui').reduce((s,x)=>s+(parseInt(x.absences)||0),0);
+  document.getElementById('stat-e').textContent=students.filter(x=>(parseInt(x.absences)||0)>0).length;
+  document.getElementById('stat-t').textContent=t;
+  document.getElementById('stat-j').textContent=j;
+}
+
+async function submitReport(){
+  const prof=document.getElementById('prof-name').value.trim();
+  const classe=document.getElementById('classe').value.trim();
+  const mois=document.getElementById('mois').value;
+  if(!prof||!classe||!mois){showBanner('error','يرجى ملء الأستاذ والقسم والشهر.');return;}
+  const reports=await load();
+  const tot=students.reduce((s,x)=>s+(parseInt(x.absences)||0),0);
+  const jus=students.filter(x=>x.justifiees==='oui').reduce((s,x)=>s+(parseInt(x.absences)||0),0);
+  const rep={
+    id:editId||Date.now().toString(),prof,classe,
+    matiere:document.getElementById('matiere').value.trim(),
+    mois,nbJours:parseInt(document.getElementById('nb-seances').value)||0,
+    remarques:document.getElementById('remarques').value.trim(),
+    students:students.map(s=>({...s})),
+    totalAbsences:tot,totalJustif:jus,
+    nbAbsents:students.filter(x=>(parseInt(x.absences)||0)>0).length,
+    savedAt:new Date().toISOString()
+  };
+  const updated=editId?reports.map(r=>r.id===editId?rep:r):[rep,...reports];
+  await save(updated);editId=null;
+  showBanner('success',`تم حفظ تقرير ${prof} — ${classe} بنجاح!`);
+  resetForm();
+}
+
+function resetForm(){
+  ['prof-name','classe','matiere','nb-seances','remarques'].forEach(id=>document.getElementById(id).value='');
+  students=[];idC=0;editId=null;renderStudents();
+  addStudent();addStudent();addStudent();
+}
+
+function showBanner(t,m){
+  const b=document.getElementById(t+'-banner');
+  document.getElementById(t+'-msg').textContent=m;
+  b.style.display='flex';setTimeout(()=>{b.style.display='none';},4000);
+}
+
+async function renderReports(){
+  const reports=await load();
+  const q=(document.getElementById('filter-search').value||'').toLowerCase();
+  const mf=document.getElementById('filter-month').value;
+  const months=[...new Set(reports.map(r=>r.mois))].sort().reverse();
+  const sel=document.getElementById('filter-month');
+  const cur=sel.value;
+  sel.innerHTML='<option value="">كل الأشهر</option>';
+  months.forEach(m=>{
+    const lb=new Date(m+'-01').toLocaleDateString('ar-MA',{month:'long',year:'numeric'});
+    sel.innerHTML+=`<option value="${m}" ${m===cur?'selected':''}>${lb}</option>`;
+  });
+  let f=reports;
+  if(q)f=f.filter(r=>(r.prof+r.classe+r.matiere).toLowerCase().includes(q));
+  if(mf)f=f.filter(r=>r.mois===mf);
+  const c=document.getElementById('reports-list');
+  if(!f.length){c.innerHTML=`<div class="empty"><i class="ti ti-inbox" aria-hidden="true"></i><p>لا توجد تقارير</p></div>`;return;}
+  c.innerHTML=f.map(r=>{
+    const ml=new Date(r.mois+'-01').toLocaleDateString('ar-MA',{month:'long',year:'numeric'});
+    const sd=new Date(r.savedAt).toLocaleDateString('ar-MA');
+    return`<div class="rcard">
+      <div class="rcard-hdr">
+        <div><div class="rtitle">${r.prof} — ${r.classe}</div><div class="rmeta">${r.matiere||'—'} | ${sd}</div></div>
+        <span class="rbadge">${ml}</span>
+      </div>
+      <div class="rstats">
+        <div class="rstat"><div class="v">${r.nbAbsents}</div><div class="l">غائبون</div></div>
+        <div class="rstat"><div class="v">${r.totalAbsences}</div><div class="l">إجمالي</div></div>
+        <div class="rstat"><div class="v">${r.totalJustif}</div><div class="l">مبررة</div></div>
+      </div>
+      <div class="detail-panel" id="dp-${r.id}">
+        <div class="drow"><span style="font-weight:500">الاسم</span><span style="font-weight:500">أيام</span><span style="font-weight:500">مبررة</span></div>
+        ${(r.students||[]).filter(s=>(parseInt(s.absences)||0)>0).map(s=>`<div class="drow"><span>${s.name||'—'}</span><span class="m">${s.absences}</span><span class="m">${s.justifiees==='oui'?'نعم':s.justifiees==='partiel'?'جزئي':'لا'}</span></div>`).join('')}
+        ${r.remarques?`<div style="margin-top:7px;font-size:11px;color:var(--color-text-secondary);text-align:right;">ملاحظة: ${r.remarques}</div>`:''}
+      </div>
+      <div class="ractions">
+        <button class="abtn" onclick="toggleDp('${r.id}')"><i class="ti ti-eye" aria-hidden="true"></i> تفاصيل</button>
+        <button class="abtn pdf-btn" onclick="exportPDF('${r.id}')"><i class="ti ti-file-type-pdf" aria-hidden="true"></i> PDF</button>
+        <button class="abtn" onclick="editReport('${r.id}')"><i class="ti ti-edit" aria-hidden="true"></i> تعديل</button>
+        <button class="abtn danger" onclick="deleteReport('${r.id}')"><i class="ti ti-trash" aria-hidden="true"></i> حذف</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleDp(id){document.getElementById('dp-'+id).classList.toggle('open');}
+
+async function deleteReport(id){const r=await load();await save(r.filter(x=>x.id!==id));renderReports();}
+
+async function editReport(id){
+  const r=await load();const rep=r.find(x=>x.id===id);if(!rep)return;
+  editId=id;
+  document.getElementById('prof-name').value=rep.prof;
+  document.getElementById('classe').value=rep.classe;
+  document.getElementById('matiere').value=rep.matiere||'';
+  document.getElementById('mois').value=rep.mois;
+  document.getElementById('nb-seances').value=rep.nbJours||'';
+  document.getElementById('remarques').value=rep.remarques||'';
+  students=(rep.students||[]).map(s=>({...s,id:++idC}));
+  renderStudents();
+  document.getElementById('mois').dispatchEvent(new Event('change'));
+  showPage('form');showBanner('success','يمكنك الآن تعديل التقرير.');
+}
+
+async function exportPDF(id){
+  const reports=await load();const r=reports.find(x=>x.id===id);if(!r)return;
+  const ml=new Date(r.mois+'-01').toLocaleDateString('ar-MA',{month:'long',year:'numeric'});
+  const rows=(r.students||[]).filter(s=>(parseInt(s.absences)||0)>0)
+    .map(s=>`<tr><td>${s.name||'—'}</td><td>${s.absences}</td><td>${s.justifiees==='oui'?'نعم':s.justifiees==='partiel'?'جزئي':'لا'}</td></tr>`).join('');
+  const html=`<!DOCTYPE html><html dir="rtl"><head><meta charset="UTF-8"><title>تقرير الغياب</title>
+  <style>body{font-family:Arial,sans-serif;direction:rtl;padding:30px;color:#111;}h1{font-size:18px;margin-bottom:4px;}p{font-size:12px;color:#555;margin-bottom:16px;}table{width:100%;border-collapse:collapse;font-size:13px;}th,td{border:1px solid #ccc;padding:7px 10px;text-align:right;}th{background:#f0f0f0;font-weight:600;}.info{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;font-size:13px;}.info div{background:#f8f8f8;padding:10px;border-radius:6px;}.info span{color:#666;}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0;}.sbox{background:#E1F5EE;padding:12px;border-radius:8px;text-align:center;}.sbox .n{font-size:22px;font-weight:600;color:#085041;}.sbox .l{font-size:11px;color:#0F6E56;}</style></head>
+  <body><h1>تقرير الغيابات الشهرية</h1><p>${ml}</p>
+  <div class="info"><div><span>الأستاذ: </span><strong>${r.prof}</strong></div><div><span>القسم: </span><strong>${r.classe}</strong></div><div><span>المادة: </span><strong>${r.matiere||'—'}</strong></div><div><span>أيام الحضور: </span><strong>${r.nbJours||'—'}</strong></div></div>
+  <div class="stats"><div class="sbox"><div class="n">${r.nbAbsents}</div><div class="l">غائبون</div></div><div class="sbox"><div class="n">${r.totalAbsences}</div><div class="l">إجمالي الأيام</div></div><div class="sbox"><div class="n">${r.totalJustif}</div><div class="l">مبررة</div></div></div>
+  <table><thead><tr><th>اسم التلميذ</th><th>أيام الغياب</th><th>مبررة</th></tr></thead><tbody>${rows}</tbody></table>
+  ${r.remarques?`<p style="margin-top:14px;font-size:12px;color:#555;">ملاحظات: ${r.remarques}</p>`:''}
+  </body></html>`;
+  const blob=new Blob([html],{type:'text/html'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download=`تقرير-${r.classe}-${r.mois}.html`;a.click();
+  URL.revokeObjectURL(url);
+}
+
+async function renderDirector(){
+  const reports=await load();
+  const tot=reports.reduce((s,r)=>s+r.totalAbsences,0);
+  const absents=reports.reduce((s,r)=>s+r.nbAbsents,0);
+  const jus=reports.reduce((s,r)=>s+r.totalJustif,0);
+  const profs=new Set(reports.map(r=>r.prof)).size;
+  document.getElementById('dir-stats').innerHTML=`
+    <div class="stat"><div class="val">${reports.length}</div><div class="lbl">تقرير مسجّل</div></div>
+    <div class="stat"><div class="val">${profs}</div><div class="lbl">أستاذ</div></div>
+    <div class="stat"><div class="val">${absents}</div><div class="lbl">حالة غياب</div></div>
+    <div class="stat"><div class="val">${tot}</div><div class="lbl">إجمالي الأيام</div></div>`;
+  renderDirTab(dirTabCur,reports);
+}
+
+function dirTab(t){
+  dirTabCur=t;
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('dt-'+t).classList.add('active');
+  load().then(r=>renderDirTab(t,r));
+}
+
+function renderDirTab(t,reports){
+  const c=document.getElementById('dir-content');
+  if(!reports.length){c.innerHTML=`<div class="empty"><i class="ti ti-inbox" aria-hidden="true"></i><p>لا توجد بيانات</p></div>`;return;}
+  if(t==='summary'){
+    const byClass={};
+    reports.forEach(r=>{if(!byClass[r.classe])byClass[r.classe]={tot:0,abs:0,reps:0};byClass[r.classe].tot+=r.totalAbsences;byClass[r.classe].abs+=r.nbAbsents;byClass[r.classe].reps+=1;});
+    c.innerHTML=`<div class="card"><table style="width:100%;font-size:12px;border-collapse:collapse;">
+      <tr style="border-bottom:0.5px solid var(--color-border-tertiary);">
+        <th style="padding:7px 6px;text-align:right;font-weight:500;color:var(--color-text-secondary);">القسم</th>
+        <th style="padding:7px 6px;text-align:right;font-weight:500;color:var(--color-text-secondary);">تقارير</th>
+        <th style="padding:7px 6px;text-align:right;font-weight:500;color:var(--color-text-secondary);">غائبون</th>
+        <th style="padding:7px 6px;text-align:right;font-weight:500;color:var(--color-text-secondary);">إجمالي أيام</th>
+      </tr>
+      ${Object.entries(byClass).sort((a,b)=>b[1].tot-a[1].tot).map(([cls,d])=>`<tr style="border-bottom:0.5px solid var(--color-border-tertiary);">
+        <td style="padding:7px 6px;text-align:right;font-weight:500;">${cls}</td>
+        <td style="padding:7px 6px;text-align:right;color:var(--color-text-secondary);">${d.reps}</td>
+        <td style="padding:7px 6px;text-align:right;color:var(--color-text-secondary);">${d.abs}</td>
+        <td style="padding:7px 6px;text-align:right;color:#0F6E56;font-weight:500;">${d.tot}</td>
+      </tr>`).join('')}
+    </table></div>`;
+  } else if(t==='profs'){
+    const bp={};
+    reports.forEach(r=>{if(!bp[r.prof])bp[r.prof]={reps:0,tot:0,classes:new Set()};bp[r.prof].reps+=1;bp[r.prof].tot+=r.totalAbsences;bp[r.prof].classes.add(r.classe);});
+    c.innerHTML=`<div class="card"><table style="width:100%;font-size:12px;border-collapse:collapse;">
+      <tr style="border-bottom:0.5px solid var(--color-border-tertiary);">
+        <th style="padding:7px 6px;text-align:right;font-weight:500;color:var(--color-text-secondary);">الأستاذ</th>
+        <th style="padding:7px 6px;text-align:right;font-weight:500;color:var(--color-text-secondary);">تقارير</th>
+        <th style="padding:7px 6px;text-align:right;font-weight:500;color:var(--color-text-secondary);">الأقسام</th>
+        <th style="padding:7px 6px;text-align:right;font-weight:500;color:var(--color-text-secondary);">إجمالي غيابات</th>
+      </tr>
+      ${Object.entries(bp).sort((a,b)=>b[1].reps-a[1].reps).map(([p,d])=>`<tr style="border-bottom:0.5px solid var(--color-border-tertiary);">
+        <td style="padding:7px 6px;text-align:right;font-weight:500;">${p}</td>
+        <td style="padding:7px 6px;text-align:right;color:var(--color-text-secondary);">${d.reps}</td>
+        <td style="padding:7px 6px;text-align:right;color:var(--color-text-secondary);">${[...d.classes].join('، ')}</td>
+        <td style="padding:7px 6px;text-align:right;color:#0F6E56;font-weight:500;">${d.tot}</td>
+      </tr>`).join('')}
+    </table></div>`;
+  } else {
+    const all=[];
+    reports.forEach(r=>(r.students||[]).filter(s=>(parseInt(s.absences)||0)>0).forEach(s=>all.push({name:s.name,abs:parseInt(s.absences)||0,classe:r.classe,mois:r.mois,jus:s.justifiees})));
+    all.sort((a,b)=>b.abs-a.abs);
+    const top=all.slice(0,15);
+    c.innerHTML=`<div class="card"><table style="width:100%;font-size:12px;border-collapse:collapse;">
+      <tr style="border-bottom:0.5px solid var(--color-border-tertiary);">
+        <th style="padding:7px 6px;text-align:right;font-weight:500;color:var(--color-text-secondary);">التلميذ</th>
+        <th style="padding:7px 6px;text-align:right;font-weight:500;color:var(--color-text-secondary);">القسم</th>
+        <th style="padding:7px 6px;text-align:right;font-weight:500;color:var(--color-text-secondary);">أيام</th>
+        <th style="padding:7px 6px;text-align:right;font-weight:500;color:var(--color-text-secondary);">مبررة</th>
+      </tr>
+      ${top.map(s=>`<tr style="border-bottom:0.5px solid var(--color-border-tertiary);">
+        <td style="padding:7px 6px;text-align:right;font-weight:500;">${s.name}</td>
+        <td style="padding:7px 6px;text-align:right;color:var(--color-text-secondary);">${s.classe}</td>
+        <td style="padding:7px 6px;text-align:right;color:#A32D2D;font-weight:500;">${s.abs}</td>
+        <td style="padding:7px 6px;text-align:right;color:var(--color-text-secondary);">${s.jus==='oui'?'نعم':s.jus==='partiel'?'جزئي':'لا'}</td>
+      </tr>`).join('')}
+    </table></div>`;
+  }
+}
+
+function setAiPrompt(t){
+  const prompts={
+    trends:'حلّل الاتجاهات العامة للغياب في هذه البيانات: هل هناك تزايد أو تناقص؟ ما الأنماط الملاحظة؟',
+    alert:'حدد التلاميذ أو الأقسام التي تستدعي التدخل العاجل بسبب كثرة الغياب.',
+    monthly:'قارن بين الأشهر المختلفة وحدد أكثر الأشهر غياباً.',
+    recommendations:'بناءً على هذه البيانات، قدّم توصيات عملية لتحسين الحضور.'
+  };
+  document.getElementById('ai-prompt').value=prompts[t]||'';
+}
+
+async function runAI(){
+  const q=document.getElementById('ai-prompt').value.trim();
+  if(!q){alert('يرجى كتابة سؤال أو اختيار نوع التحليل.');return;}
+  const reports=await load();
+  if(!reports.length){document.getElementById('ai-result').style.display='block';document.getElementById('ai-result').textContent='لا توجد بيانات للتحليل. يرجى إضافة تقارير أولاً.';return;}
+  const btn=document.getElementById('ai-run-btn');
+  btn.disabled=true;
+  btn.innerHTML='<i class="ti ti-loader" aria-hidden="true"></i> <span class="loading-dots">جاري التحليل</span>';
+  const res=document.getElementById('ai-result');
+  res.style.display='block';res.textContent='';
+  const summary=reports.map(r=>`- ${r.prof} / ${r.classe} / ${r.matiere||'—'} / ${r.mois}: ${r.nbAbsents} غائب، ${r.totalAbsences} يوم إجمالي، ${r.totalJustif} مبررة`).join('\n');
+  const body={
+    model:'claude-sonnet-4-20250514',max_tokens:1000,
+    system:'أنت مساعد تربوي متخصص في تحليل بيانات الغياب المدرسي. أجب دائماً بالعربية بشكل واضح ومنظم.',
+    messages:[{role:'user',content:`بيانات الغياب:\n${summary}\n\nالسؤال: ${q}`}]
+  };
+  try{
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    const data=await resp.json();
+    const txt=data.content?.map(x=>x.text||'').join('')||'لم يتم الحصول على استجابة.';
+    res.textContent=txt;
+  }catch(e){res.textContent='حدث خطأ أثناء الاتصال بالذكاء الاصطناعي.';}
+  btn.disabled=false;btn.innerHTML='<i class="ti ti-sparkles" aria-hidden="true"></i> تحليل البيانات';
+}
+
+async function exportBackup(){
+  const r=await load();
+  const b=new Blob([JSON.stringify({version:2,exportedAt:new Date().toISOString(),reports:r},null,2)],{type:'application/json'});
+  const u=URL.createObjectURL(b);const a=document.createElement('a');
+  a.href=u;a.download=`absences-backup-${new Date().toISOString().slice(0,10)}.json`;a.click();URL.revokeObjectURL(u);
+}
+
+async function exportCSV(){
+  const r=await load();
+  const rows=[['الأستاذ','القسم','المادة','الشهر','التلميذ','أيام الغياب','مبررة']];
+  r.forEach(rep=>(rep.students||[]).filter(s=>(parseInt(s.absences)||0)>0).forEach(s=>{rows.push([rep.prof,rep.classe,rep.matiere||'',rep.mois,s.name||'',s.absences,s.justifiees==='oui'?'نعم':s.justifiees==='partiel'?'جزئي':'لا']);}));
+  const csv='\uFEFF'+rows.map(r=>r.join(',')).join('\n');
+  const b=new Blob([csv],{type:'text/csv;charset=utf-8'});
+  const u=URL.createObjectURL(b);const a=document.createElement('a');
+  a.href=u;a.download=`absences-${new Date().toISOString().slice(0,10)}.csv`;a.click();URL.revokeObjectURL(u);
+}
+
+async function importBackup(e){
+  const f=e.target.files[0];if(!f)return;
+  const txt=await f.text();
+  try{
+    const data=JSON.parse(txt);
+    const reps=data.reports||data;
+    if(!Array.isArray(reps))throw new Error();
+    const existing=await load();
+    const ids=new Set(existing.map(r=>r.id));
+    const merged=[...existing,...reps.filter(r=>!ids.has(r.id))];
+    await save(merged);
+    const b=document.getElementById('import-banner');
+    document.getElementById('import-msg').textContent=`تم استيراد ${reps.length} تقرير بنجاح!`;
+    b.style.display='flex';setTimeout(()=>b.style.display='none',4000);
+    renderStorageStats();
+  }catch(err){alert('ملف غير صالح.');}
+  e.target.value='';
+}
+
+async function renderStorageStats(){
+  const r=await load();
+  const size=new Blob([JSON.stringify(r)]).size;
+  document.getElementById('storage-stats').innerHTML=`
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div style="background:var(--color-background-secondary);padding:10px;border-radius:var(--border-radius-md);"><div style="font-size:18px;font-weight:500;color:var(--color-text-primary);">${r.length}</div><div style="font-size:11px;">تقرير محفوظ</div></div>
+      <div style="background:var(--color-background-secondary);padding:10px;border-radius:var(--border-radius-md);"><div style="font-size:18px;font-weight:500;color:var(--color-text-primary);">${(size/1024).toFixed(1)} KB</div><div style="font-size:11px;">حجم البيانات</div></div>
+    </div>`;
+}
+
+document.getElementById('mois').addEventListener('change',function(){
+  if(this.value){const l=new Date(this.value+'-01').toLocaleDateString('ar-MA',{month:'long',year:'numeric'});document.getElementById('badge-month').textContent=l;}
+});
+const now=new Date();
+document.getElementById('mois').value=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+document.getElementById('mois').dispatchEvent(new Event('change'));
+addStudent();addStudent();addStudent();
+</script>
